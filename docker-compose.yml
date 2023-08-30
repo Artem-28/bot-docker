@@ -21,7 +21,7 @@ services:
     container_name: bot_app_server
     build:
       context: ./app-server
-      dockerfile: app-server-1/Dockerfile
+      dockerfile: app-server/Dockerfile
       args:
         DOCKER_NODE_VERSION: 'lts'
     volumes:

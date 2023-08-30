@@ -1,8 +1,6 @@
-app-server/**
-!app-server/Dockerfile
+app-server
 
-app-client-constructor/**
-!app-client-constructor/Dockerfile
+app-client-constructor
 
 app_database
 
