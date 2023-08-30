@@ -1,0 +1,85 @@
+version: '3'
+
+networks:
+  app:
+    external:
+      name: app-bot-network
+
+services:
+
+#  nginx:
+#    image: nginx:stable-alpine
+#    container_name: bot_nginx
+#    ports:
+#      - "${EXTERNAL_NGINX_PORT}:${INTERNAL_NGINX_PORT}"
+#    volumes:
+#      - ./nginx/conf.d:/etc/nginx/conf.d
+#    networks:
+#      - app
+
+  nest-js:
+    container_name: bot_app_server
+    build:
+      context: ./app-server
+      dockerfile: app-server-1/Dockerfile
+      args:
+        DOCKER_NODE_VERSION: 'lts'
+    volumes:
+      - ./app-server:/app
+    ports:
+      - "${EXTERNAL_NEST_PORT}:${INTERNAL_NEST_PORT}"
+    networks:
+      - app
+
+  database:
+    image: mysql:latest
+    container_name: bot_app_database
+    restart: always
+    volumes:
+      - ./app_database/data:/var/lib/mysql
+      - ./app_database/conf.d:/etc/mysql/conf.d
+      - ./app_database/logs:/var/log/mysql/
+      - ./app_database/dump:/dump
+    ports:
+      - "${EXTERNAL_DATABASE_PORT}:${INTERNAL_DATABASE_PORT}"
+    environment:
+      MYSQL_DATABASE: ${DATABASE}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_USER: ${DATABASE_USER}
+    networks:
+      - app
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: bot_app_pma
+    restart: always
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${EXTERNAL_PMA_PORT}:${INTERNAL_PMA_PORT}"
+    links:
+      - database
+    networks:
+      - app
+
+#  client-constructor:
+#    container_name: bot_client_constructor
+#    build:
+#      context: ./app-client-constructor
+#      dockerfile: Dockerfile
+#      args:
+#        NODE_VERSION: lts
+#    volumes:
+#      - "./app-client-constructor:/app"
+#    ports:
+#      - "${EXTERNAL_CLIENT_CONSTRUCTOR_PORT}:${INTERNAL_CLIENT_CONSTRUCTOR_PORT}"
+#    tty: true
+#    networks:
+#      - app
+
+
+
+

@@ -1,0 +1,20 @@
+app-server/**
+!app-server/Dockerfile
+
+app-client-constructor/**
+!app-client-constructor/Dockerfile
+
+app_database
+
+
+.env
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
