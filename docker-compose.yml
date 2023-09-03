@@ -24,6 +24,8 @@ services:
       dockerfile: ../dockerfiles/dockerfile-app-server/Dockerfile
       args:
         DOCKER_NODE_VERSION: 'lts'
+    depends_on:
+      - database
     volumes:
       - ./app-server:/app
     ports:
@@ -46,6 +48,7 @@ services:
       MYSQL_DATABASE: ${DATABASE}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      TZ: ${WORKSPACE_TIMEZONE}
     networks:
       - app
 
