@@ -21,9 +21,9 @@ services:
     container_name: bot_app_server
     build:
       context: ./app-server
-      dockerfile: ../dockerfiles/dockerfile-app-server/Dockerfile
+      dockerfile: ../dockerfiles/app-server.dockerfile
       args:
-        DOCKER_NODE_VERSION: 'lts'
+        DOCKER_NODE_VERSION: 20
     depends_on:
       - database
     volumes:
@@ -48,7 +48,6 @@ services:
       MYSQL_DATABASE: ${DATABASE}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
-      TZ: ${WORKSPACE_TIMEZONE}
     networks:
       - app
 
@@ -71,7 +70,7 @@ services:
 #    container_name: bot_client_constructor
 #    build:
 #      context: ./app-client-constructor
-#      dockerfile: dockerfiles/dockerfile-app-client-constructor/Dockerfile
+#      dockerfile: dockerfiles/app-client-constructor.dockerfile
 #      args:
 #        NODE_VERSION: lts
 #    volumes:
