@@ -33,6 +33,36 @@ services:
     networks:
       - app
 
+  client-constructor:
+    container_name: bot_client_constructor
+    build:
+      context: ./app-client-constructor
+      dockerfile: ../dockerfiles/app-client-constructor.dockerfile
+      args:
+        DOCKER_NODE_VERSION: 20
+    volumes:
+      - "./app-client-constructor:/app"
+    ports:
+      - "${EXTERNAL_CLIENT_CONSTRUCTOR_PORT}:${INTERNAL_CLIENT_CONSTRUCTOR_PORT}"
+    tty: true
+    networks:
+      - app
+
+  client-chat:
+    container_name: bot_client_chat
+    build:
+      context: ./app-client-chat
+      dockerfile: ../dockerfiles/app-client-chat.dockerfile
+      args:
+        DOCKER_NODE_VERSION: 20
+    volumes:
+      - "./app-client-chat:/app"
+    ports:
+      - "${EXTERNAL_CLIENT_CHAT_PORT}:${INTERNAL_CLIENT_CHAT_PORT}"
+    tty: true
+    networks:
+      - app
+
   database:
     image: mysql:latest
     container_name: bot_app_database
@@ -66,20 +96,6 @@ services:
     networks:
       - app
 
-#  client-constructor:
-#    container_name: bot_client_constructor
-#    build:
-#      context: ./app-client-constructor
-#      dockerfile: dockerfiles/app-client-constructor.dockerfile
-#      args:
-#        NODE_VERSION: lts
-#    volumes:
-#      - "./app-client-constructor:/app"
-#    ports:
-#      - "${EXTERNAL_CLIENT_CONSTRUCTOR_PORT}:${INTERNAL_CLIENT_CONSTRUCTOR_PORT}"
-#    tty: true
-#    networks:
-#      - app
 
 
 
