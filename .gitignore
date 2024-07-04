@@ -2,6 +2,8 @@ app-server
 app-client-constructor
 app-client-chat
 app_database
+app-client-widget
+app-server1
 
 
 .env
