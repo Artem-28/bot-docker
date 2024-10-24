@@ -27,10 +27,10 @@
 ```
 10. В корневой папке с проектом выполнить следующие команды:
 ```bash
- sudo docker-compose build
+ sudo docker compose build
 ```
 ```bash
- sudo docker-compose up
+ sudo docker compose up
 ```
 
 
