@@ -9,7 +9,7 @@
 ```
 
 2. Создать фаил .env и скопировать в него содержимое файла example.env
-3. Создать папку "app-server" и проинициализировать в нее [репозиторий](https://github.com/Artem-28/bot-server.git)
+3. Создать папку "app-server" и проинициализировать в нее [репозиторий](https://github.com/Artem-28/bot-app-server)
 4. В папке "app-server" создать фаил .env и скопировать в него содержимое файла example.env
 5. В папке "app-server" выполнить команду:
  ```bash
