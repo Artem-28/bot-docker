@@ -33,4 +33,23 @@
  sudo docker compose up
 ```
 
+### Запуск миграций
+1. Зайти в docker контейнер bot_app_server
+ ```bash
+ sudo docker exec -it bot_app_server bash
+```
+2. Выполнить команду запуска миграций
+ ```bash
+ npm run migration:run
+```
+### Откат последней миграции
+1. Зайти в docker контейнер bot_app_server
+ ```bash
+ sudo docker exec -it bot_app_server bash
+```
+2. Выполнить команду отката последней миграции
+ ```bash
+ npm run migration:revert
+```
+
 
