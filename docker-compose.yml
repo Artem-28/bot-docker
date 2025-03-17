@@ -63,6 +63,21 @@ services:
     networks:
       - app
 
+  client-widget:
+    container_name: bot_client_widget
+    build:
+      context: ./app-client-widget
+      dockerfile: ../dockerfiles/app-client-widget.dockerfile
+      args:
+        DOCKER_NODE_VERSION: 20
+    volumes:
+      - "./app-client-widget:/app"
+    ports:
+      - "${EXTERNAL_CLIENT_WIDGET_PORT}:${INTERNAL_CLIENT_WIDGET_PORT}"
+    tty: true
+    networks:
+      - app
+
   database:
     image: mysql:latest
     container_name: bot_app_database
