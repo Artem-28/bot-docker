@@ -1,35 +1,28 @@
-version: '3'
-
 networks:
   app:
-    external:
-      name: app-bot-network
+    name: app-bot-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.24.0/24
 
 services:
-
-#  nginx:
-#    image: nginx:stable-alpine
-#    container_name: bot_nginx
-#    ports:
-#      - "${EXTERNAL_NGINX_PORT}:${INTERNAL_NGINX_PORT}"
-#    volumes:
-#      - ./nginx/conf.d:/etc/nginx/conf.d
-#    networks:
-#      - app
-
   nest-js:
     container_name: bot_app_server
     build:
       context: ./app-server
       dockerfile: ../dockerfiles/app-server.dockerfile
       args:
-        DOCKER_NODE_VERSION: 20
+        DOCKER_NODE_VERSION: 24.13.0
     depends_on:
       - database
     volumes:
       - ./app-server:/app
+    command: sh -c "npm install && npm run start:dev"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     ports:
-      - "${EXTERNAL_NEST_PORT}:${INTERNAL_NEST_PORT}"
+      - ${EXTERNAL_NEST_PORT}:${INTERNAL_NEST_PORT}
     networks:
       - app
 
@@ -39,11 +32,14 @@ services:
       context: ./app-client-constructor
       dockerfile: ../dockerfiles/app-client-constructor.dockerfile
       args:
-        DOCKER_NODE_VERSION: 20
+        DOCKER_NODE_VERSION: 24.13.0
+    depends_on:
+      - nest-js
     volumes:
-      - "./app-client-constructor:/app"
+      - ./app-client-constructor:/app
+    command: sh -c "npm install && npm run dev"
     ports:
-      - "${EXTERNAL_CLIENT_CONSTRUCTOR_PORT}:${INTERNAL_CLIENT_CONSTRUCTOR_PORT}"
+      - ${EXTERNAL_CLIENT_CONSTRUCTOR_PORT}:${INTERNAL_CLIENT_CONSTRUCTOR_PORT}
     tty: true
     networks:
       - app
@@ -54,11 +50,14 @@ services:
       context: ./app-client-chat
       dockerfile: ../dockerfiles/app-client-chat.dockerfile
       args:
-        DOCKER_NODE_VERSION: 20
+        DOCKER_NODE_VERSION: 24.13.0
+    depends_on:
+      - nest-js
     volumes:
-      - "./app-client-chat:/app"
+      - ./app-client-chat:/app
+    command: sh -c "npm install && npm run dev"
     ports:
-      - "${EXTERNAL_CLIENT_CHAT_PORT}:${INTERNAL_CLIENT_CHAT_PORT}"
+      - ${EXTERNAL_CLIENT_CHAT_PORT}:${INTERNAL_CLIENT_CHAT_PORT}
     tty: true
     networks:
       - app
@@ -69,11 +68,12 @@ services:
       context: ./app-client-widget
       dockerfile: ../dockerfiles/app-client-widget.dockerfile
       args:
-        DOCKER_NODE_VERSION: 20
+        DOCKER_NODE_VERSION: 24.13.0
     volumes:
-      - "./app-client-widget:/app"
+      - ./app-client-widget:/app
+    command: sh -c "npm install && npm run dev"
     ports:
-      - "${EXTERNAL_CLIENT_WIDGET_PORT}:${INTERNAL_CLIENT_WIDGET_PORT}"
+      - ${EXTERNAL_CLIENT_WIDGET_PORT}:${INTERNAL_CLIENT_WIDGET_PORT}
     tty: true
     networks:
       - app
@@ -88,7 +88,7 @@ services:
       - ./app_database/logs:/var/log/mysql/
       - ./app_database/dump:/dump
     ports:
-      - "${EXTERNAL_DATABASE_PORT}:${INTERNAL_DATABASE_PORT}"
+      - ${EXTERNAL_DATABASE_PORT}:${INTERNAL_DATABASE_PORT}
     environment:
       MYSQL_DATABASE: ${DATABASE}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
@@ -105,7 +105,9 @@ services:
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     ports:
-      - "${EXTERNAL_PMA_PORT}:${INTERNAL_PMA_PORT}"
+      - ${EXTERNAL_PMA_PORT}:${INTERNAL_PMA_PORT}
+    depends_on:
+      - database
     links:
       - database
     networks:
